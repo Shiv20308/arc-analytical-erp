@@ -237,23 +237,21 @@ FRONTEND_URL=https://yourdomain.com
 
 ---
 
-## Vercel Hosting (Frontend + API + MongoDB)
-
-This repo is now set up to deploy on Vercel as a single project using `vercel.json`.
+## Vercel (Frontend) + Render (Backend) + MongoDB
 
 ### 1. Create a MongoDB Atlas database
 - Create a cluster on MongoDB Atlas
 - Add your IP or `0.0.0.0/0` to Network Access
 - Create a DB user and copy the connection string
 
-### 2. Create a Vercel project (root = repo)
-- Import `Shiv20308/arc-analytical-erp`
-- Framework: **Create React App**
-- The `vercel.json` will handle both frontend and backend
-
-### 3. Add Vercel Environment Variables
-Set these in **Vercel Project Settings → Environment Variables**:
+### 2. Deploy Backend on Render
+- Create a **Web Service** on Render from this repo
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Set Environment Variables (Render Dashboard):
 ```
+NODE_ENV=production
 MONGO_URI=...
 JWT_SECRET=...
 JWT_EXPIRE=7d
@@ -264,18 +262,23 @@ EMAIL_USER=...
 EMAIL_PASS=...
 EMAIL_FROM=Arc Analytical <no-reply@arcanalytical.com>
 ```
-Frontend env:
+
+### 3. Deploy Frontend on Vercel
+- Import `Shiv20308/arc-analytical-erp`
+- **Root Directory**: `frontend`
+- Framework: **Create React App**
+- Add Environment Variable:
 ```
-REACT_APP_API_URL=/api
+REACT_APP_API_URL=https://<your-render-service>.onrender.com/api
 ```
 
-### 4. Deploy
-Click **Deploy** in Vercel. The frontend will be served from `/` and the API from `/api/*`.
+### 4. Test
+- Backend health: `https://<your-render-service>.onrender.com/api/health`
+- Frontend should load and call the API without CORS errors
 
-### Important Vercel Notes
-- **File uploads and PDFs**: Vercel serverless has no persistent disk. Replace local `backend/uploads` with cloud storage (S3, Cloudinary, etc.).
-- **Cron jobs**: `node-cron` won't run on serverless. Use Vercel Cron or a separate scheduler.
-- **Puppeteer**: May exceed serverless limits. Consider `puppeteer-core` with a serverless-friendly Chromium.
+### Notes
+- Render keeps a filesystem, so `uploads/` works better than serverless
+- Free Render services can sleep; first request may be slow
 
 ---
 
