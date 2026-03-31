@@ -237,6 +237,48 @@ FRONTEND_URL=https://yourdomain.com
 
 ---
 
+## Vercel Hosting (Frontend + API + MongoDB)
+
+This repo is now set up to deploy on Vercel as a single project using `vercel.json`.
+
+### 1. Create a MongoDB Atlas database
+- Create a cluster on MongoDB Atlas
+- Add your IP or `0.0.0.0/0` to Network Access
+- Create a DB user and copy the connection string
+
+### 2. Create a Vercel project (root = repo)
+- Import `Shiv20308/arc-analytical-erp`
+- Framework: **Create React App**
+- The `vercel.json` will handle both frontend and backend
+
+### 3. Add Vercel Environment Variables
+Set these in **Vercel Project Settings → Environment Variables**:
+```
+MONGO_URI=...
+JWT_SECRET=...
+JWT_EXPIRE=7d
+FRONTEND_URL=https://<your-vercel-app>.vercel.app
+EMAIL_HOST=...
+EMAIL_PORT=...
+EMAIL_USER=...
+EMAIL_PASS=...
+EMAIL_FROM=Arc Analytical <no-reply@arcanalytical.com>
+```
+Frontend env:
+```
+REACT_APP_API_URL=/api
+```
+
+### 4. Deploy
+Click **Deploy** in Vercel. The frontend will be served from `/` and the API from `/api/*`.
+
+### Important Vercel Notes
+- **File uploads and PDFs**: Vercel serverless has no persistent disk. Replace local `backend/uploads` with cloud storage (S3, Cloudinary, etc.).
+- **Cron jobs**: `node-cron` won't run on serverless. Use Vercel Cron or a separate scheduler.
+- **Puppeteer**: May exceed serverless limits. Consider `puppeteer-core` with a serverless-friendly Chromium.
+
+---
+
 ## Role Permissions
 
 | Feature | Admin | Sales | Engineer |
