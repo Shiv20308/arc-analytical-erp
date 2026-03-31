@@ -237,14 +237,14 @@ FRONTEND_URL=https://yourdomain.com
 
 ---
 
-## Vercel (Frontend) + Render (Backend) + MongoDB
+## Render (Frontend + Backend) + MongoDB
 
 ### 1. Create a MongoDB Atlas database
 - Create a cluster on MongoDB Atlas
 - Add your IP or `0.0.0.0/0` to Network Access
 - Create a DB user and copy the connection string
 
-### 2. Deploy Backend on Render
+### 2. Deploy Backend on Render (Web Service)
 - Create a **Web Service** on Render from this repo
 - Root Directory: `backend`
 - Build Command: `npm install`
@@ -255,7 +255,7 @@ NODE_ENV=production
 MONGO_URI=...
 JWT_SECRET=...
 JWT_EXPIRE=7d
-FRONTEND_URL=https://<your-vercel-app>.vercel.app
+FRONTEND_URL=https://<your-frontend>.onrender.com
 EMAIL_HOST=...
 EMAIL_PORT=...
 EMAIL_USER=...
@@ -263,17 +263,19 @@ EMAIL_PASS=...
 EMAIL_FROM=Arc Analytical <no-reply@arcanalytical.com>
 ```
 
-### 3. Deploy Frontend on Vercel
-- Import `Shiv20308/arc-analytical-erp`
-- **Root Directory**: `frontend`
-- Framework: **Create React App**
+### 3. Deploy Frontend on Render (Static Site)
+- Create a **Static Site** on Render from this repo
+- Root Directory: `frontend`
+- Build Command: `npm install && npm run build`
+- Publish Directory: `build`
 - Add Environment Variable:
 ```
-REACT_APP_API_URL=https://<your-render-service>.onrender.com/api
+REACT_APP_API_URL=https://<your-backend>.onrender.com/api
 ```
+Enable **SPA redirects** in the Static Site settings (for React Router).
 
 ### 4. Test
-- Backend health: `https://<your-render-service>.onrender.com/api/health`
+- Backend health: `https://<your-backend>.onrender.com/api/health`
 - Frontend should load and call the API without CORS errors
 
 ### Notes
